@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<executable>
+  <category>Converters</category>
+  <title>dcmultiFixup</title>
+  <description>none</description>
+  <version>0.1</version>
+  <documentation-url></documentation-url>
+  <license>none</license>
+  <contributor>Andrey Fedorov</contributor>
+<acknowledgements>none</acknowledgements>
+
+  <parameters>
+    <label>IO</label>
+    <description>Input/output parameters</description>
+
+    <file>
+      <name>inputFileName</name>
+      <label>Input file</label>
+      <channel>input</channel>
+      <index>0</index>
+      <description>Input file</description>
+    </file>
+
+    <file>
+      <name>outputFileName</name>
+      <label>Output file</label>
+      <channel>output</channel>
+      <index>1</index>
+      <description>Output file</description>
+    </file>
+
+		<boolean>
+			<name>useLegacy</name>
+			<label>Produce legacy converted IOD</label>
+			<channel>input</channel>
+			<longflag>legacy</longflag>
+		</boolean>
+
+  </parameters>
+</executable>
