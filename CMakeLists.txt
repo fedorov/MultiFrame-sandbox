@@ -34,5 +34,5 @@ SEMMacroBuildCLI(
   ADDITIONAL_SRCS ${MODULE_SRCS}
   )
 
-add_executable(itkDCMTKMultiFrame4DTest itkDCMTKMultiFrame4DTest.cxx)
-target_link_libraries(itkDCMTKMultiFrame4DTest ${DCMTK_LIBRARIES} ${ITK_LIBRARIES})
+add_executable(MultiFrameReadWriteTest MultiFrameReadWriteTest.cxx)
+target_link_libraries(MultiFrameReadWriteTest ${DCMTK_LIBRARIES} ${ITK_LIBRARIES})
