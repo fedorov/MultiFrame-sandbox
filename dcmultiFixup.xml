@@ -34,6 +34,7 @@
 			<label>Produce legacy converted IOD</label>
 			<channel>input</channel>
 			<longflag>legacy</longflag>
+			<default>0</default>
 		</boolean>
 
   </parameters>

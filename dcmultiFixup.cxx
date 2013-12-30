@@ -30,10 +30,10 @@ int main(int argc, char** argv)
 		// Set the correct class
 		// LegacyEnhanced not recognized by David's tools
 		if(useLegacy){
-		dcm->putAndInsertString(DCM_SOPClassUID, "1.2.840.10008.5.1.4.1.1.4.4");
+		  dcm->putAndInsertString(DCM_SOPClassUID, "1.2.840.10008.5.1.4.1.1.4.4");
 				// UID_LegacyConvertedEnhancedMRImageStorage);
 				// not supported in the Slicer version of DCMTK
-		meta->putAndInsertString(DCM_MediaStorageSOPClassUID, "1.2.840.10008.5.1.4.1.1.4.4");
+		  meta->putAndInsertString(DCM_MediaStorageSOPClassUID, "1.2.840.10008.5.1.4.1.1.4.4");
 				// UID_LegacyConvertedEnhancedMRImageStorage);
 		}
 	
