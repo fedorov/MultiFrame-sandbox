@@ -94,23 +94,16 @@ template <class T> bool testReadWrite(char* inputName){
 
 int main(int argc, char *argv[])
 {
-  if(argc != 3)
-    {
-    std::cerr << "Missing filenames" << std::endl
-              << "itkDCMTKMultiFram4DTest " 
-              << " <inputDicomFile> <outputFile>"
-              << std::endl;
-    return EXIT_FAILURE;
-    }
+  PARSE_ARGS;
 
   typedef itk::Image<unsigned short, 3>   ImageType3d;
   typedef itk::Image<unsigned short, 4>   ImageType4d;
 
-	if(!testReadWrite<ImageType3d>(argv[1])){
+	if(!testReadWrite<ImageType3d>(inputFileName.c_str())){
 		std::cerr << "Reading 3d image failed" << std::endl;
 	}
 
-	if(!testReadWrite<ImageType4d>(argv[1])){
+	if(!testReadWrite<ImageType4d>(inputFileName.c_str())){
 		std::cerr << "Reading 4d image failed" << std::endl;
 	}
 
