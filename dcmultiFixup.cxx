@@ -21,7 +21,6 @@ int main(int argc, char** argv)
 	PARSE_ARGS;
 	DcmFileFormat fileformat;
 
-
 	OFCondition status = fileformat.loadFile(inputFileName.c_str());
 	if(status.good()){
 		DcmMetaInfo *meta = fileformat.getMetaInfo();
@@ -65,17 +64,23 @@ int main(int argc, char** argv)
 		dcm->findAndDeleteElement(DCM_ReferencedRawDataSequence);
 
 		DcmItem *seq, *item;
-		dcm->findAndGetSequenceItem(DCM_DimensionOrganizationSequence, item);
-		uid.generate();
-		uid.toString(uidStr, OFUUID::ER_RepresentationOID);
-		item->putAndInsertString(DCM_DimensionOrganizationUID, uidStr.c_str());
+		status = dcm->findAndGetSequenceItem(DCM_DimensionOrganizationSequence, item);
+    if(status.good()){
+  		uid.generate();
+  		uid.toString(uidStr, OFUUID::ER_RepresentationOID);
+  		item->putAndInsertString(DCM_DimensionOrganizationUID, uidStr.c_str());
+  
+  		for(int i=0;i<3;i++){
+  		  status = dcm->findAndGetSequenceItem(DCM_DimensionIndexSequence, item, i);
+        if(status.good())
+    		  item->putAndInsertString(DCM_DimensionOrganizationUID, uidStr.c_str());
+  		}
+    }
 
-		for(int i=0;i<3;i++){
-		  dcm->findAndGetSequenceItem(DCM_DimensionIndexSequence, item, i);
-		  item->putAndInsertString(DCM_DimensionOrganizationUID, uidStr.c_str());
-		}
-
-		fileformat.saveFile(outputFileName.c_str(), EXS_LittleEndianExplicit);
+		status = fileformat.saveFile(outputFileName.c_str(), EXS_LittleEndianExplicit);
+    if(!status.good()){
+      std::cerr << "Failed to save the output file" << std::endl;
+    }
 
 	} else {
 		std::cerr << "Error: cannot read DICOM file (" << status.text() << ")" << std::endl;
