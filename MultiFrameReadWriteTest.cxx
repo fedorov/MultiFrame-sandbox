@@ -22,11 +22,15 @@
 #include "itkGDCMImageIO.h"
 #include "itkSubtractImageFilter.h"
 #include "itkStatisticsImageFilter.h"
+#include <sstream>
 
-template <class T> bool testReadWrite(char* inputName){
+#include "MultiFrameReadWriteTestCLP.h"
+
+template <class T> bool testReadWrite(const char* inputName, const char* outputPrefix){
 
   typedef itk::ImageFileReader<T> ReaderType;
   typedef itk::ImageFileWriter<T> WriterType;
+
 
   typename ReaderType::Pointer dcmtkreader = ReaderType::New();
   typename ReaderType::Pointer gdcmreader = ReaderType::New();
@@ -39,6 +43,7 @@ template <class T> bool testReadWrite(char* inputName){
   try
     {
     dcmtkreader->Update();
+    std::cout << "DCMTK reader success" << std::endl;
     }
   catch (itk::ExceptionObject & e)
     {
@@ -50,6 +55,7 @@ template <class T> bool testReadWrite(char* inputName){
   try
     {
     gdcmreader->Update();
+    std::cout << "GDCM reader success" << std::endl;
     }
   catch (itk::ExceptionObject & e)
     {
@@ -62,28 +68,42 @@ template <class T> bool testReadWrite(char* inputName){
 		return false;
 	}
 
-  typename T::Pointer im1 = dcmtkreader->GetOutput();
-  typename T::Pointer im2 = gdcmreader->GetOutput();
-
   typename WriterType::Pointer dcmtkwriter = WriterType::New();
-  dcmtkwriter->SetInput(im1);
-	dcmtkwriter->SetFileName("dcmtk_result.nrrd");
+  dcmtkwriter->SetInput(dcmtkreader->GetOutput());
 
   typename WriterType::Pointer gdcmwriter = WriterType::New();
-  gdcmwriter->SetInput(im1);
-	gdcmwriter->SetFileName("gdcm_result.nrrd");
+  gdcmwriter->SetInput(gdcmreader->GetOutput());
 
   try
     {
-    dcmtkwriter->Update();
+    std::stringstream fname;
+    fname << outputPrefix << "_gdcm_" << gdcmreader->GetOutput()->GetImageDimension() << ".nrrd";
+    gdcmwriter->SetFileName(fname.str().c_str());
 		gdcmwriter->Update();
+    std::cout << "GDCM writer success" << std::endl;
     }
   catch (itk::ExceptionObject & e)
     {
-    std::cerr << "exception in file writer" << std::endl;
+    std::cerr << "GDCM exception in file writer" << std::endl;
     std::cerr << e << std::endl;
     return false;
     }
+  
+  try
+    {
+    std::stringstream fname;
+    fname << outputPrefix << "_dcmtk_" << dcmtkreader->GetOutput()->GetImageDimension() << ".nrrd";
+    dcmtkwriter->SetFileName(fname.str().c_str());
+		dcmtkwriter->Update();
+    std::cout << "DCMTK writer success" << std::endl;
+    }
+  catch (itk::ExceptionObject & e)
+    {
+    std::cerr << "DCMTK exception in file writer" << std::endl;
+    std::cerr << e << std::endl;
+    return false;
+    }
+
   catch(...)
     {
     return false;
@@ -99,11 +119,11 @@ int main(int argc, char *argv[])
   typedef itk::Image<unsigned short, 3>   ImageType3d;
   typedef itk::Image<unsigned short, 4>   ImageType4d;
 
-	if(!testReadWrite<ImageType3d>(inputFileName.c_str())){
+	if(!testReadWrite<ImageType3d>(inputFileName.c_str(), outputFilePrefix.c_str())){
 		std::cerr << "Reading 3d image failed" << std::endl;
 	}
 
-	if(!testReadWrite<ImageType4d>(inputFileName.c_str())){
+	if(!testReadWrite<ImageType4d>(inputFileName.c_str(), outputFilePrefix.c_str())){
 		std::cerr << "Reading 4d image failed" << std::endl;
 	}
 
